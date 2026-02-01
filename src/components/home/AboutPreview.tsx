@@ -48,7 +48,7 @@ export default function AboutPreview() {
               <iframe 
                 width="100%" 
                 height="100%" 
-                src="https://www.youtube.com/embed/qC0vDKVPCrw?autoplay=1&mute=1&loop=1&playlist=qC0vDKVPCrw&controls=0&rel=0" 
+                src="https://www.youtube.com/embed/1mJP_haSq-4?autoplay=1&mute=1&loop=1&playlist=1mJP_haSq-4&controls=0&rel=0" 
                 title="Meraz Atmosphere" 
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
