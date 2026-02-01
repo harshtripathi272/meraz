@@ -2,129 +2,110 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sparkles } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/events", label: "Events" },
-  { href: "/passes", label: "Passes" },
-  { href: "/gallery", label: "Gallery" },
+const links = [
+  { name: "Events", href: "/events" },
+  { name: "Passes", href: "/passes" },
+  { name: "About", href: "/about" },
 ];
 
 export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass py-3" : "bg-transparent py-5"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.5 }}
-              className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-magenta to-neon-teal flex items-center justify-center"
-            >
-              <Sparkles className="w-6 h-6 text-primary-dark" />
-            </motion.div>
-            <span className="text-2xl font-bold neon-text-gradient">
-              MERAZ
-            </span>
-            <span className="text-sm text-amber-glow font-medium">6.0</span>
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-white/5 ${
+          isScrolled 
+            ? "glass-panel py-4 bg-obsidian/80 supports-[backdrop-filter]:bg-obsidian/20" 
+            : "bg-transparent py-6 border-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-3">
+             <div className="w-2 h-8 bg-indigo-600 group-hover:bg-chrome transition-colors duration-300" />
+             <div className="flex flex-col">
+               <span className="text-xl font-heading font-bold tracking-[0.2em] leading-none group-hover:text-chrome transition-colors">MERAZ</span>
+               <span className="text-[0.6rem] font-mono tracking-widest text-text-secondary">SIX.ZERO</span>
+             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-12">
+            {links.map((link) => (
+              <Link 
+                key={link.name} 
                 href={link.href}
-                className="relative text-text-primary hover:text-neon-teal transition-colors duration-300 font-medium group"
+                className="relative text-xs font-bold uppercase tracking-[0.2em] text-text-secondary hover:text-white transition-colors py-2"
               >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-neon-magenta to-neon-teal group-hover:w-full transition-all duration-300" />
+                {pathname === link.href && (
+                  <motion.span 
+                    layoutId="underline" 
+                    className="absolute bottom-0 left-0 w-full h-[1px] bg-indigo-500" 
+                  />
+                )}
+                {link.name}
               </Link>
             ))}
-            <Link
+            
+            <Link 
               href="/passes"
-              className="btn-primary text-sm"
+              className="px-6 py-2 border border-white/20 hover:border-indigo-500 hover:bg-indigo-500/10 text-xs font-bold uppercase tracking-widest transition-all duration-300"
             >
-              Get Passes
+              Get Tickets
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
+          {/* Mobile Toggle */}
+          <button 
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-text-primary hover:text-neon-magenta transition-colors"
+            className="md:hidden text-white"
           >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isOpen ? <X /> : <Menu />}
           </button>
         </div>
-      </div>
+      </motion.nav>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden glass mt-2 mx-4 rounded-2xl overflow-hidden"
+      <motion.div
+        initial={false}
+        animate={{ opacity: isOpen ? 1 : 0, pointerEvents: isOpen ? 'auto' : 'none' }}
+        className="fixed inset-0 z-40 bg-obsidian/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center gap-8"
+      >
+        {links.map((link) => (
+          <Link
+            key={link.name}
+            href={link.href}
+            onClick={() => setIsOpen(false)}
+            className="text-2xl font-heading font-bold tracking-widest text-white hover:text-indigo-500 transition-colors"
           >
-            <div className="p-6 space-y-4">
-              {navLinks.map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="block text-lg text-text-primary hover:text-neon-teal transition-colors py-2 border-b border-glass-border"
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navLinks.length * 0.1 }}
-              >
-                <Link
-                  href="/passes"
-                  onClick={() => setIsOpen(false)}
-                  className="btn-primary block text-center mt-4"
-                >
-                  Get Passes
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+            {link.name}
+          </Link>
+        ))}
+        <Link
+          href="/passes"
+          onClick={() => setIsOpen(false)}
+          className="mt-8 px-8 py-3 bg-indigo-600 text-white font-mono tracking-widest text-xs uppercase"
+        >
+          Secure Entry
+        </Link>
+      </motion.div>
+    </>
   );
 }

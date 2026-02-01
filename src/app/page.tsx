@@ -1,21 +1,17 @@
-import HeroNeon from "@/components/home/HeroNeon";
-import AboutPreview from "@/components/home/AboutPreview";
+import HeroScroll from "@/components/home/HeroScroll";
 import EventsPreview from "@/components/home/EventsPreview";
-import PassesPreview from "@/components/home/PassesPreview";
+import AboutPreview from "@/components/home/AboutPreview";
 import VibeCheck from "@/components/features/VibeCheck";
-import AIGallery from "@/components/features/AIGallery";
-import Testimonials from "@/components/features/Testimonials";
 
 export default function Home() {
   return (
     <>
-      <HeroNeon />
-      <AboutPreview />
-      <EventsPreview />
-      <PassesPreview />
-      <VibeCheck />
-      <AIGallery />
-      <Testimonials />
+      <HeroScroll />
+      <div className="relative z-10 bg-obsidian">
+        <AboutPreview />
+        <EventsPreview />
+        <VibeCheck />
+      </div>
     </>
   );
 }

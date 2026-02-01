@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Send, Sparkles, RefreshCw } from "lucide-react";
+import { Send, Sparkles, RefreshCw, Radio } from "lucide-react";
 import { analyzeVibe, type VibeResponse } from "@/lib/data/vibeResponses";
 
 export default function VibeCheck() {
@@ -13,12 +13,8 @@ export default function VibeCheck() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
     setIsAnalyzing(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Longer "processing" feel
     const vibeResult = analyzeVibe(input);
     setResult(vibeResult);
     setIsAnalyzing(false);
@@ -30,150 +26,85 @@ export default function VibeCheck() {
   };
 
   return (
-    <section className="section relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-neon-magenta/5 via-transparent to-neon-teal/5" />
-      
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <h2 className="section-title">Vibe Check ✨</h2>
-          <p className="section-subtitle">
-            How are you feeling about Meraz? Share your vibe and let the tribal 
-            spirits respond!
+    <section className="py-24 relative overflow-hidden bg-charcoal border-t border-white/5">
+      <div className="max-w-3xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4">
+             <Radio className="w-3 h-3 text-indigo-400 animate-pulse" />
+             <span className="text-xs font-mono text-indigo-300 tracking-widest uppercase">System Check</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-4">
+            VIBE CHECK
+          </h2>
+          <p className="text-text-secondary font-mono text-sm tracking-wide">
+            Analyze your frequency resonance with the Meraz core.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-card p-6 md:p-8"
-        >
-          <form onSubmit={handleSubmit} className="mb-6">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="I'm feeling excited about the hackathon..."
-                className="flex-1 px-4 py-3 rounded-xl bg-surface-dark border border-glass-border text-text-primary placeholder:text-text-muted focus:outline-none focus:border-neon-magenta transition-colors"
-                disabled={isAnalyzing}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || isAnalyzing}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-neon-magenta to-neon-teal text-primary-dark font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-neon-magenta/20 transition-all"
-              >
-                {isAnalyzing ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Sparkles className="w-5 h-5" />
-                  </motion.div>
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-                <span className="hidden sm:inline">Check Vibe</span>
-              </button>
-            </div>
-          </form>
-
-          {/* Result */}
-          <AnimatePresence mode="wait">
-            {result && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ duration: 0.4, type: "spring" }}
-                className="rounded-2xl p-6 text-center relative overflow-hidden"
-                style={{ background: result.bgGradient }}
-              >
-                {/* Emoji */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="text-6xl mb-4"
-                >
-                  {result.emoji}
-                </motion.div>
-
-                {/* Phrase */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-lg md:text-xl font-medium mb-4"
-                  style={{ color: result.color }}
-                >
-                  {result.phrase}
-                </motion.p>
-
-                {/* Vibe meter */}
-                <div className="flex justify-center gap-2 mb-4">
-                  {[-1, 0, 1].map((score) => (
-                    <motion.div
-                      key={score}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.5 + score * 0.1 }}
-                      className={`w-3 h-3 rounded-full ${
-                        result.score === score 
-                          ? "scale-150" 
-                          : "opacity-30"
-                      }`}
-                      style={{ 
-                        backgroundColor: score === -1 ? "#cc00cc" : score === 0 ? "#ffa500" : "#00ffff",
-                        boxShadow: result.score === score ? `0 0 15px ${result.color}` : "none"
-                      }}
-                    />
-                  ))}
-                </div>
-
-                {/* Reset button */}
+        <div className="glass-panel p-1 rounded-2xl bg-gradient-to-br from-white/10 to-transparent">
+          <div className="bg-obsidian/80 rounded-xl p-8 backdrop-blur-xl">
+            <form onSubmit={handleSubmit} className="mb-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="INPUT STATUS // Example: Hyped for the Pro-Nights..."
+                  className="w-full bg-charcoal border border-white/10 rounded-lg px-6 py-4 text-white placeholder:text-white/20 font-mono text-sm focus:outline-none focus:border-indigo-500 transition-colors pr-32"
+                  disabled={isAnalyzing}
+                />
                 <button
-                  onClick={handleReset}
-                  className="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors text-sm"
+                  type="submit"
+                  disabled={!input.trim() || isAnalyzing}
+                  className="absolute right-2 top-2 bottom-2 px-6 bg-white text-black font-bold text-xs uppercase tracking-widest hover:bg-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-md flex items-center gap-2"
                 >
-                  <RefreshCw className="w-4 h-4" />
-                  Check another vibe
+                  {isAnalyzing ? "Scanning..." : "Analyze"}
                 </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Suggestions */}
-          {!result && (
-            <div className="text-center">
-              <p className="text-text-muted text-sm mb-3">Try saying:</p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {[
-                  "I'm hyped for the concerts!",
-                  "Feeling a bit nervous",
-                  "Can't wait for robotics",
-                  "Just exploring"
-                ].map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => setInput(suggestion)}
-                    className="px-3 py-1.5 rounded-full text-xs border border-glass-border text-text-secondary hover:border-neon-magenta hover:text-neon-magenta transition-colors"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
               </div>
-            </div>
-          )}
-        </motion.div>
+            </form>
+
+            <AnimatePresence mode="wait">
+              {result && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="border-t border-white/10 pt-8 text-center"
+                >
+                  <div className="mb-2 text-xs font-mono text-indigo-400 uppercase tracking-widest">
+                    Analysis Complete
+                  </div>
+                  <div className="text-6xl mb-4 grayscale hover:grayscale-0 transition-all duration-500 cursor-default">
+                    {result.emoji}
+                  </div>
+                  <div className="text-2xl font-heading font-bold mb-6 text-white">
+                    {result.phrase}
+                  </div>
+                  <button 
+                    onClick={handleReset}
+                    className="text-xs text-text-secondary hover:text-white underline underline-offset-4"
+                  >
+                    RESET SYSTEM
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {!result && !isAnalyzing && (
+              <div className="flex flex-wrap justify-center gap-3">
+                 {["Ready to hack", "Music vibes", "Just exploring"].map(tag => (
+                   <button 
+                     key={tag}
+                     onClick={() => setInput(tag)}
+                     className="px-3 py-1 border border-white/5 rounded-full text-xs text-text-secondary hover:border-indigo-500/50 hover:text-indigo-400 transition-colors"
+                   >
+                     {tag}
+                   </button>
+                 ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
