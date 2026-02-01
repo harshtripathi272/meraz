@@ -5,6 +5,16 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { events } from "@/lib/data/events";
 
+// Map event categories to the user's uploaded images
+const categoryImages: Record<string, string> = {
+  "Technical": "/assets/images/tech.png",
+  "Cultural": "/assets/images/cultural.png",
+  "Gaming": "/assets/images/cyberpunk.png",
+  "Literary": "/assets/images/marble.png",
+  "Workshop": "/assets/images/slab.png",
+  "default": "/assets/images/tech.png",
+};
+
 const featuredEvents = events.slice(0, 4);
 
 export default function EventsPreview() {
@@ -15,7 +25,7 @@ export default function EventsPreview() {
           <h2 className="text-4xl md:text-6xl font-heading font-bold mb-4 tracking-tighter">
             HEADLINERS
           </h2>
-          <p className="text-text-secondary max-w-md font-mono text-xs tracking-widest uppercase">
+          <p className="text-white/50 max-w-md font-mono text-xs tracking-widest uppercase">
             Curated experiences for the forward thinking.
           </p>
         </div>
@@ -40,24 +50,24 @@ export default function EventsPreview() {
             className="group cursor-pointer"
           >
             <Link href={`/events/${event.id}`} className="block">
-              {/* Image Container with Reveal Effect */}
-              <div className="relative aspect-[16/9] overflow-hidden bg-charcoal mb-6">
+              {/* Image Container */}
+              <div className="relative aspect-[16/9] overflow-hidden bg-neutral-900 mb-6">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   className="w-full h-full relative"
                 >
-                  {/* Grayscale to Color hover */}
                   <div 
                     className="absolute inset-0 bg-cover bg-center transition-all duration-500 will-change-transform grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
-                    style={{ backgroundImage: `url('/assets/images/placeholder-${index % 3}.jpg')` }} // Placeholder, user will replace
+                    style={{ 
+                      backgroundImage: `url('${categoryImages[event.category] || categoryImages.default}')` 
+                    }}
                   />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors duration-500" />
                   
                   {/* Category Tag */}
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/10 text-[0.6rem] font-mono uppercase tracking-widest text-white">
+                    <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 text-[0.6rem] font-mono uppercase tracking-widest text-white">
                       {event.category}
                     </span>
                   </div>
@@ -70,12 +80,12 @@ export default function EventsPreview() {
                   <h3 className="text-2xl font-bold font-heading mb-1 group-hover:text-indigo-500 transition-colors">
                     {event.name}
                   </h3>
-                  <p className="text-text-secondary text-sm max-w-xs line-clamp-2">
+                  <p className="text-white/50 text-sm max-w-xs line-clamp-2">
                     {event.shortDescription}
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="block font-mono text-xs text-text-secondary mb-1">
+                  <span className="block font-mono text-xs text-white/50 mb-1">
                     {event.date}
                   </span>
                   <span className="block font-mono text-xs text-indigo-400">

@@ -1,88 +1,204 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useProgress, Html, OrbitControls, Environment, Stars } from "@react-three/drei";
+import { Float, Stars, TorusKnot, Icosahedron, Octahedron } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
-function Artifact() {
-  const meshRef = useRef<THREE.Mesh>(null);
+function ReactorCore() {
+  const outerRef = useRef<THREE.Group>(null);
+  const innerRef = useRef<THREE.Group>(null);
   
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.2;
-      meshRef.current.rotation.y += delta * 0.5;
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    if (outerRef.current) {
+      outerRef.current.rotation.x = time * 0.1;
+      outerRef.current.rotation.y = time * 0.15;
+    }
+    if (innerRef.current) {
+      innerRef.current.rotation.x = -time * 0.2;
+      innerRef.current.rotation.z = time * 0.1;
     }
   });
 
   return (
-    <mesh ref={meshRef} scale={1.5}>
-      <icosahedronGeometry args={[1, 0]} />
-      <meshPhysicalMaterial 
-        roughness={0.2} 
-        metalness={0.8}
-        color="#1a1a1a"
-        emissive="#4f46e5"
-        emissiveIntensity={0.2}
-        wireframe={false}
-        clearcoat={1}
-      />
-      <lineSegments>
-        <edgesGeometry args={[new THREE.IcosahedronGeometry(1, 0)]} />
-        <lineBasicMaterial color="#e0e0e0" transparent opacity={0.3} />
-      </lineSegments>
-    </mesh>
+    <group>
+      <group ref={outerRef}>
+        <Icosahedron args={[1.8, 1]}>
+          <meshPhongMaterial 
+            color="#2a2a2a" 
+            emissive="#4f46e5" 
+            emissiveIntensity={0.1}
+            wireframe 
+            transparent 
+            opacity={0.3} 
+          />
+        </Icosahedron>
+        <ScatterPoints count={40} radius={2.5} />
+      </group>
+
+      <group ref={innerRef}>
+        <TorusKnot args={[0.8, 0.25, 128, 16]}>
+          <meshPhysicalMaterial 
+            color="#000000"
+            emissive="#4f46e5"
+            emissiveIntensity={2}
+            roughness={0.1}
+            metalness={1}
+            clearcoat={1}
+          />
+        </TorusKnot>
+        <Float speed={5} rotationIntensity={1} floatIntensity={0.5}>
+          <Octahedron args={[0.3]} position={[1.2, 0, 0]}>
+             <meshBasicMaterial color="#e0e0e0" wireframe />
+          </Octahedron>
+          <Octahedron args={[0.3]} position={[-1.2, 0.5, 0]}>
+             <meshBasicMaterial color="#e0e0e0" wireframe />
+          </Octahedron>
+        </Float>
+      </group>
+    </group>
   );
 }
 
-function LoaderStyles({ progress }: { progress: number }) {
+function ScatterPoints({ count, radius }: { count: number; radius: number }) {
+  const points = useMemo(() => {
+    const p = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        const theta = THREE.MathUtils.randFloatSpread(360); 
+        const phi = THREE.MathUtils.randFloatSpread(360); 
+        p[i*3] = radius * Math.sin(theta) * Math.cos(phi);
+        p[i*3+1] = radius * Math.sin(theta) * Math.sin(phi);
+        p[i*3+2] = radius * Math.cos(theta);
+    }
+    return p;
+  }, [count, radius]);
+
   return (
-    <Html center>
-      <div className="text-chrome font-mono text-xl tracking-[0.2em] font-bold whitespace-nowrap">
-        LOADING // {progress.toFixed(0)}%
-      </div>
-    </Html>
+    <points>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[points, 3]} />
+      </bufferGeometry>
+      <pointsMaterial size={0.05} color="#4f46e5" transparent opacity={0.6} sizeAttenuation />
+    </points>
   );
 }
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
-  const { progress } = useProgress();
-  const [finished, setFinished] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (progress === 100) {
-      const timeout = setTimeout(() => {
-        setFinished(true);
-        onComplete();
-      }, 1000); // Wait 1s after load for effect
-      return () => clearTimeout(timeout);
-    }
-  }, [progress, onComplete]);
+    // Animate the progress counter
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + Math.random() * 15 + 5;
+      });
+    }, 200);
+
+    // Force complete after 3 seconds
+    const timeout = setTimeout(() => {
+      onComplete();
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [onComplete]);
 
   return (
     <motion.div
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 1, ease: "easeInOut" } }}
-      className="fixed inset-0 z-[100] bg-obsidian flex flex-col items-center justify-center p-0 m-0"
+      exit={{ 
+        opacity: 0, 
+        scale: 1.05, 
+        transition: { duration: 0.8, ease: "easeInOut" } 
+      }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 9999,
+        background: '#000',
+      }}
     >
-      <div className="w-full h-full relative">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1.5} color="#4f46e5" />
-          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-          <Artifact />
-          <Environment preset="city" />
-          <LoaderStyles progress={progress} />
-          <OrbitControls autoRotate autoRotateSpeed={2} enableZoom={false} />
-        </Canvas>
+      {/* 3D Canvas - Full Screen */}
+      <Canvas 
+        camera={{ position: [0, 0, 4.5], fov: 45 }} 
+        gl={{ antialias: true }}
+        style={{ 
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <color attach="background" args={['#050505']} />
+        <fog attach="fog" args={['#050505', 5, 12]} />
+        <ambientLight intensity={0.5} />
+        <Stars radius={50} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
+        <ReactorCore />
+      </Canvas>
+      
+      {/* UI Overlay - Centered */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        pointerEvents: 'none',
+      }}>
+        <div style={{
+          fontSize: 'clamp(4rem, 15vw, 10rem)',
+          fontWeight: 900,
+          fontFamily: 'var(--font-mono), monospace',
+          background: 'linear-gradient(to top, #4f46e5, #ffffff)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          letterSpacing: '-0.05em',
+        }}>
+          {Math.min(100, Math.round(progress))}
+        </div>
+        <div style={{
+          width: '8rem',
+          height: '2px',
+          background: 'rgba(255,255,255,0.2)',
+          margin: '1rem 0',
+        }} />
+        <div style={{
+          fontSize: '0.875rem',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5em',
+          color: '#818cf8',
+          fontFamily: 'var(--font-mono), monospace',
+        }}>
+          Initializing System
+        </div>
       </div>
       
-      {/* Bottom Text */}
-      <div className="absolute bottom-10 left-0 w-full text-center">
-        <p className="text-text-secondary text-xs uppercase tracking-widest opacity-50">
-          Initializing Meraz v6.0 Core
-        </p>
+      {/* Version Tag */}
+      <div style={{
+        position: 'absolute',
+        bottom: '3rem',
+        left: '3rem',
+        fontSize: '0.75rem',
+        color: 'rgba(255,255,255,0.2)',
+        fontFamily: 'monospace',
+      }}>
+        MERAZ.OS v6.0.0
       </div>
     </motion.div>
   );

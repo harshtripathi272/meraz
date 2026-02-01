@@ -1,77 +1,93 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useTransform, motion, MotionValue } from "framer-motion";
+import ScrollSequence from "./ScrollSequence";
 
 export default function HeroScroll() {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
+  return (
+    <ScrollSequence 
+      frameCount={456} 
+      pathPattern="/assets/sequences/hero/%04d.jpg"
+    >
+      {({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) => (
+        <HeroContent scrollYProgress={scrollYProgress} />
+      )}
+    </ScrollSequence>
+  );
+}
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
-  const yText = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
-  
-  // Parallax for background video
-  const yVideo = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+function HeroContent({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+  // Transform values
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.7, 1], [1, 1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.3]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -50]);
+  const subtitleOpacity = useTransform(scrollYProgress, [0, 0.1, 0.6, 0.8], [0, 1, 1, 0]);
+  const guideOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
 
   return (
-    <div ref={containerRef} className="h-[150vh] relative z-0">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Background Video Layer */}
+    <div className="relative h-full w-full flex flex-col items-center justify-center text-center px-4">
+      
+      {/* Scroll Guide */}
+      <motion.div 
+        style={{ opacity: guideOpacity }}
+        className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
+      >
         <motion.div 
-          style={{ y: yVideo, scale }}
-          className="absolute inset-0 z-0"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-1"
         >
-          <div className="absolute inset-0 bg-obsidian/40 z-10" />
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            poster="/assets/images/hero-poster.jpg"
-          >
-            {/* User to add their generated video here */}
-            {/* <source src="/assets/videos/hero-loop.mp4" type="video/mp4" /> */}
-          </video>
-          {/* Fallback pattern if no video */}
-          <div className="absolute inset-0 bg-noise opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/20 to-transparent" />
+          <div className="w-1.5 h-3 bg-white/50 rounded-full" />
         </motion.div>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono">
+          Scroll to explore
+        </span>
+      </motion.div>
 
-        {/* Content Layer */}
-        <motion.div 
-          style={{ opacity, y: yText }}
-          className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4"
-        >
-          <div className="mb-4 flex items-center gap-4">
-             <span className="h-[1px] w-12 bg-chrome" />
-             <span className="text-chrome tracking-[0.5em] text-sm uppercase font-mono">
-               Est. 2017
-             </span>
-             <span className="h-[1px] w-12 bg-chrome" />
-          </div>
-
-          <h1 className="text-8xl md:text-9xl lg:text-[12rem] font-heading font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 leading-[0.8]">
-            MERAZ
-            <span className="block text-4xl md:text-6xl font-normal tracking-normal text-indigo-500 mt-2 font-mono">
-              6.0
+      {/* Main Hero Content */}
+      <motion.div 
+        style={{ opacity, scale, y }} 
+        className="relative z-10"
+      >
+        {/* Pre-title */}
+        <motion.div style={{ y: titleY }}>
+          <div className="mb-8 flex items-center justify-center gap-4">
+            <span className="h-px w-16 bg-gradient-to-r from-transparent to-white/50" />
+            <span className="text-white/60 tracking-[0.5em] text-[10px] uppercase font-mono">
+              IIT Bhilai Presents
             </span>
+            <span className="h-px w-16 bg-gradient-to-l from-transparent to-white/50" />
+          </div>
+
+          {/* Main Title */}
+          <h1 
+            className="text-[clamp(4rem,20vw,16rem)] font-heading font-black tracking-tighter leading-[0.85]"
+            style={{
+              color: 'white',
+              textShadow: '0 0 100px rgba(79, 70, 229, 0.5), 0 0 50px rgba(79, 70, 229, 0.3)',
+            }}
+          >
+            МЕRАZ
           </h1>
+        </motion.div>
 
-          <p className="mt-8 text-lg font-body text-text-secondary max-w-xl mx-auto tracking-wide">
-            NEON TRIBAL PULSE // WHERE ANCIENT RHYTHM MEETS FUTURE TECH
+        {/* Subtitle */}
+        <motion.div style={{ opacity: subtitleOpacity }} className="mt-10">
+          <p className="text-xl md:text-3xl font-mono text-indigo-400 tracking-[0.2em] uppercase font-light">
+            6.0 // Techno-Cultural
           </p>
-
-          <div className="mt-12 flex flex-col gap-2 items-center">
-             <div className="w-[1px] h-12 bg-gradient-to-b from-transparent to-chrome animate-pulse" />
-             <span className="text-xs uppercase tracking-widest text-text-secondary">Scroll to Explore</span>
+          
+          <div className="mt-8 flex justify-center gap-4 flex-wrap">
+            <div className="px-5 py-2 border border-white/20 rounded-full text-xs text-white/70 bg-black/40 backdrop-blur-md font-mono">
+              FEB 15-17, 2026
+            </div>
+            <div className="px-5 py-2 border border-indigo-500/30 rounded-full text-xs text-indigo-400 bg-indigo-500/10 backdrop-blur-md font-mono">
+              REGISTER NOW
+            </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }

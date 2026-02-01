@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="antialiased">
-      <body className={`${outfit.variable} ${inter.variable} ${orbitron.variable} bg-obsidian text-white overflow-hidden`}>
+      <body className={`${outfit.variable} ${inter.variable} ${orbitron.variable} bg-obsidian text-white`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
