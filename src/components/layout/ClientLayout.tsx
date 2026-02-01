@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ChatBot from "@/components/features/ChatBot";
 import RobotMascot from "@/components/features/RobotMascot";
+import { AuthProvider } from "@/context/AuthContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +24,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <AnimatePresence mode="wait">
         {loading && <LoadingScreen key="loader" onComplete={() => setLoading(false)} />}
       </AnimatePresence>
@@ -44,6 +45,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           <RobotMascot />
         </SmoothScroll>
       )}
-    </>
+    </AuthProvider>
   );
 }

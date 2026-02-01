@@ -48,12 +48,12 @@ export default function AboutPreview() {
               <iframe 
                 width="100%" 
                 height="100%" 
-                src="https://www.youtube.com/embed/1mJP_haSq-4?si=pZQXyxg5zePfSXLj&rel=0&autoplay=0" 
-                title="Meraz Aftermovie" 
+                src="https://www.youtube.com/embed/qC0vDKVPCrw?autoplay=1&mute=1&loop=1&playlist=qC0vDKVPCrw&controls=0&rel=0" 
+                title="Meraz Atmosphere" 
                 frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover opacity-80"
               ></iframe>
               
               {/* Corner Decorations */}

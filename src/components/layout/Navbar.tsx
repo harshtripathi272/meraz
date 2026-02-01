@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Cog, Sparkles } from "lucide-react";
+import { Menu, X, Cog, Sparkles, User, LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const links = [
   { name: "Events", href: "/events" },
@@ -15,6 +16,7 @@ const links = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -102,27 +104,69 @@ export default function Navbar() {
               </Link>
             ))}
             
-            {/* CTA Button */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="ml-4"
-            >
-              <Link 
-                href="/passes"
-                className="relative inline-flex items-center gap-2 px-6 py-2.5 overflow-hidden group"
-              >
-                {/* Gradient border */}
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-amber-500 rounded-full" />
-                <div className="absolute inset-[1.5px] bg-[#0a0a12] rounded-full" />
-                
-                {/* Content */}
-                <span className="relative z-10 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-amber-400 tracking-wide">
-                  Get Tickets
-                </span>
-                <Sparkles className="relative z-10 w-4 h-4 text-amber-400" />
-              </Link>
-            </motion.div>
+            {/* Auth section */}
+            <div className="flex items-center gap-4 ml-4">
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <div className="hidden lg:flex flex-col items-end">
+                    <span className="text-sm font-bold text-white">{user.displayName || user.email?.split('@')[0]}</span>
+                    <span className="text-[10px] text-cyan-400 font-mono">AGENT</span>
+                  </div>
+                  
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-amber-500/20 border border-white/10 flex items-center justify-center">
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt="User" className="w-full h-full rounded-xl object-cover" />
+                    ) : (
+                      <User className="w-5 h-5 text-cyan-400" />
+                    )}
+                  </div>
+
+                  <button 
+                    onClick={() => signOut()}
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/50 hover:text-red-400"
+                    title="Logout"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Link 
+                    href="/login"
+                    className="text-sm font-bold text-white/70 hover:text-white transition-colors"
+                  >
+                    Login
+                  </Link>
+
+                  <Link 
+                    href="/signup"
+                    className="text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <Link 
+                      href="/passes"
+                      className="relative inline-flex items-center gap-2 px-6 py-2.5 overflow-hidden group"
+                    >
+                      {/* Gradient border */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-amber-500 rounded-full" />
+                      <div className="absolute inset-[1.5px] bg-[#0a0a12] rounded-full" />
+                      
+                      {/* Content */}
+                      <span className="relative z-10 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-amber-400 tracking-wide">
+                        Get Tickets
+                      </span>
+                      <Sparkles className="relative z-10 w-4 h-4 text-amber-400" />
+                    </Link>
+                  </motion.div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile Toggle */}
@@ -214,13 +258,49 @@ export default function Navbar() {
                 transition={{ delay: 0.3 }}
                 className="mt-8"
               >
-                <Link
-                  href="/passes"
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-cyan-500 to-amber-500 text-black font-bold rounded-full text-lg"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Get Tickets
-                </Link>
+                <div className="flex flex-col items-center gap-4">
+                  {!user ? (
+                    <>
+                      <Link
+                        href="/login"
+                        className="text-white/70 font-bold text-lg"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        href="/signup"
+                        className="text-cyan-400 font-bold text-lg"
+                      >
+                        Sign Up
+                      </Link>
+                      <Link
+                        href="/passes"
+                        className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-cyan-500 to-amber-500 text-black font-bold rounded-full text-lg"
+                      >
+                        <Sparkles className="w-5 h-5" />
+                        Get Tickets
+                      </Link>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex items-center gap-3 bg-white/5 px-6 py-3 rounded-2xl border border-white/10">
+                        {user.photoURL ? (
+                          <img src={user.photoURL} alt="User" className="w-8 h-8 rounded-full" />
+                        ) : (
+                          <User className="w-6 h-6 text-cyan-400" />
+                        )}
+                        <span className="text-white font-bold">{user.displayName || "Agent"}</span>
+                      </div>
+                      
+                      <button 
+                        onClick={() => signOut()}
+                        className="text-red-400 font-bold flex items-center gap-2"
+                      >
+                        <LogOut className="w-5 h-5" /> Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </motion.div>
               
               {/* Festival info */}
