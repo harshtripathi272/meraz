@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, useEffect, useCallback, ReactNode, useMemo } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { Zap, Users, Trophy, Sparkles } from "lucide-react";

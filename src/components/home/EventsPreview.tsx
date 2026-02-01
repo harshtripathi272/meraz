@@ -4,9 +4,9 @@ import { motion, useInView, useMotionValue, useSpring, useTransform } from "fram
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin, Trophy, Sparkles, Music, Code, Gamepad2, Mic2 } from "lucide-react";
-import { events } from "@/lib/data/events";
+import { events, type Event } from "@/lib/data/events";
 
-const featuredEvents = events.slice(0, 6);
+const featuredEvents = (events as Event[]).slice(0, 6);
 
 const categoryIcons: Record<string, React.ElementType> = {
   'sci-tech': Code,
@@ -117,9 +117,9 @@ function EventCard({ event, index, isInView }: {
     setIsHovered(false);
   };
 
-  const catKey = (event.category as string).toLowerCase();
-  const colors = categoryColors[catKey] || categoryColors['sci-tech'];
-  const CategoryIcon = categoryIcons[catKey] || Sparkles;
+  const catKey = (event.category ? String(event.category).toLowerCase() : 'sci-tech');
+  const colors = categoryColors[catKey] ?? categoryColors['sci-tech'];
+  const CategoryIcon = categoryIcons[catKey] ?? Sparkles;
 
   return (
     <motion.div

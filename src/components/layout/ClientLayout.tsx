@@ -7,6 +7,7 @@ import SmoothScroll from "./SmoothScroll";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ChatBot from "@/components/features/ChatBot";
+import RobotMascot from "@/components/features/RobotMascot";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           </motion.main>
           <Footer />
           <ChatBot />
+          <RobotMascot />
         </SmoothScroll>
       )}
     </>

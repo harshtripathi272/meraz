@@ -34,8 +34,8 @@ function Robot({ scrollY }: { scrollY: number }) {
     <primitive 
       ref={robotRef} 
       object={scene} 
-      scale={2.2} 
-      position={[0, -1.2, 0]}
+      scale={2.0} 
+      position={[0, -1.0, 0]}
     />
   );
 }
