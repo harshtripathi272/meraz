@@ -37,7 +37,7 @@ export const events: Event[] = [
       email: "culturals@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/neon-nritya",
-    image: "/assets/events/neon-nritya.jpg",
+    image: "/assets/images/cultural.png",
     tags: ["Dance", "Classical", "Solo", "Group"],
     prizePool: "₹50,000"
   },
@@ -57,7 +57,7 @@ export const events: Event[] = [
       email: "scitech@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/code-pulse",
-    image: "/assets/events/code-pulse.jpg",
+    image: "/assets/images/tech.png",
     tags: ["Hackathon", "Coding", "Team", "48hr"],
     prizePool: "₹1,00,000"
   },
@@ -77,7 +77,7 @@ export const events: Event[] = [
       email: "music@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/tribal-beats",
-    image: "/assets/events/tribal-beats.jpg",
+    image: "/assets/images/cultural.png",
     tags: ["Music", "Band", "Live Performance"],
     prizePool: "₹75,000"
   },
@@ -97,7 +97,7 @@ export const events: Event[] = [
       email: "robotics@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/robo-wars",
-    image: "/assets/events/robo-wars.jpg",
+    image: "/assets/images/tech.png",
     tags: ["Robotics", "Combat", "Engineering"],
     prizePool: "₹80,000"
   },
@@ -117,7 +117,7 @@ export const events: Event[] = [
       email: "ecell@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/startup-ignite",
-    image: "/assets/events/startup-pitch.jpg",
+    image: "/assets/images/marble.png",
     tags: ["Startup", "Pitch", "Entrepreneurship"],
     prizePool: "₹2,00,000 + Incubation"
   },
@@ -137,7 +137,7 @@ export const events: Event[] = [
       email: "fintech@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/crypto-quest",
-    image: "/assets/events/crypto-quest.jpg",
+    image: "/assets/images/cyberpunk.png",
     tags: ["Crypto", "Blockchain", "Trading"],
     prizePool: "0.1 ETH"
   },
@@ -157,7 +157,7 @@ export const events: Event[] = [
       email: "informals@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/stand-up-showdown",
-    image: "/assets/events/standup.jpg",
+    image: "/assets/images/emoji.png",
     tags: ["Comedy", "Stand-up", "Entertainment"],
     prizePool: "₹30,000"
   },
@@ -177,7 +177,7 @@ export const events: Event[] = [
       email: "esports@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/esports-arena",
-    image: "/assets/events/esports.jpg",
+    image: "/assets/images/cyberpunk.png",
     tags: ["Gaming", "Valorant", "BGMI", "Esports"],
     prizePool: "₹1,50,000"
   },
@@ -197,7 +197,7 @@ export const events: Event[] = [
       email: "fashion@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/fashion-fusion",
-    image: "/assets/events/fashion.jpg",
+    image: "/assets/images/cultural.png",
     tags: ["Fashion", "Runway", "Team"],
     prizePool: "₹60,000"
   },
@@ -217,7 +217,7 @@ export const events: Event[] = [
       email: "quiz@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/quiz-masters",
-    image: "/assets/events/quiz.jpg",
+    image: "/assets/images/emoji.png",
     tags: ["Quiz", "Knowledge", "Team"],
     prizePool: "₹25,000"
   },
@@ -237,7 +237,7 @@ export const events: Event[] = [
       email: "drones@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/drone-racing",
-    image: "/assets/events/drone.jpg",
+    image: "/assets/images/tech.png",
     tags: ["Drone", "Racing", "FPV"],
     prizePool: "₹40,000"
   },
@@ -257,7 +257,7 @@ export const events: Event[] = [
       email: "trading@meraz.iitbhilai.ac.in"
     },
     registerUrl: "/register/bull-bear",
-    image: "/assets/events/trading.jpg",
+    image: "/assets/images/slab.png",
     tags: ["Trading", "Stocks", "Finance"],
     prizePool: "₹35,000"
   }

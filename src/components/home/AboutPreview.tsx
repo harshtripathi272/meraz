@@ -43,64 +43,22 @@ export default function AboutPreview() {
             className="relative"
           >
             {/* Main Video Container */}
-            <div className="relative group">
-              {/* Outer glow */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 via-purple-500/10 to-amber-500/20 rounded-[2rem] blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
-              
-              {/* Video Frame */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a14]">
-                {/* Placeholder for video */}
-                <div className="aspect-video relative overflow-hidden">
-                  {/* Gradient Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-[#0a0a14] to-amber-500/20" />
-                  
-                  {/* Grid Pattern */}
-                  <div 
-                    className="absolute inset-0 opacity-[0.03]"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '40px 40px',
-                    }}
-                  />
-                  
-                  {/* Play Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute inset-0 flex items-center justify-center group/play"
-                  >
-                    <div className="relative">
-                      {/* Outer ring */}
-                      <div className="absolute -inset-6 rounded-full border-2 border-white/10 group-hover/play:border-white/20 group-hover/play:scale-110 transition-all duration-300" />
-                      
-                      {/* Play button */}
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400 flex items-center justify-center shadow-2xl shadow-cyan-500/30 group-hover/play:shadow-cyan-500/50 transition-all">
-                        <Play className="w-8 h-8 text-black ml-1" fill="black" />
-                      </div>
-                    </div>
-                  </motion.button>
-                  
-                  {/* LIVE Badge */}
-                  <div className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-red-500/20 backdrop-blur-xl border border-red-500/30 rounded-full">
-                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="text-red-400 text-xs font-bold uppercase tracking-wider">Aftermovie</span>
-                  </div>
-                  
-                  {/* Year badge */}
-                  <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full">
-                    <span className="text-white/80 text-sm font-mono">MERAZ 5.0</span>
-                  </div>
-                </div>
-              </div>
+            {/* Main Video Container */}
+            <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a14] shadow-2xl shadow-cyan-500/10">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/1mJP_haSq-4?si=pZQXyxg5zePfSXLj&rel=0&autoplay=0" 
+                title="Meraz Aftermovie" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowFullScreen
+                className="absolute inset-0 w-full h-full object-cover"
+              ></iframe>
               
               {/* Corner Decorations */}
-              <div className="absolute -top-3 -left-3 w-6 h-6 border-l-2 border-t-2 border-cyan-500/50 rounded-tl-lg" />
-              <div className="absolute -top-3 -right-3 w-6 h-6 border-r-2 border-t-2 border-cyan-500/50 rounded-tr-lg" />
-              <div className="absolute -bottom-3 -left-3 w-6 h-6 border-l-2 border-b-2 border-amber-500/50 rounded-bl-lg" />
-              <div className="absolute -bottom-3 -right-3 w-6 h-6 border-r-2 border-b-2 border-amber-500/50 rounded-br-lg" />
+              <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-500/50 rounded-tl-lg pointer-events-none" />
+              <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-amber-500/50 rounded-br-lg pointer-events-none" />
             </div>
           </motion.div>
 

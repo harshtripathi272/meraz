@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState, useEffect, useCallback, ReactNode, useMemo } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { Zap, Users, Trophy, Sparkles } from "lucide-react";
@@ -131,11 +129,9 @@ export function SecondSequence() {
     offset: ["start start", "end end"]
   });
 
-  // Keep all useTransform calls at component level
-  const textOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 0.5, 1], [100, 0, -100]);
-  const textScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 1.05]);
-  const badgeOpacity = useTransform(scrollYProgress, [0.1, 0.25, 0.75, 0.9], [0, 1, 1, 0]);
+  // Content Animations
+  const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const contentScale = useTransform(scrollYProgress, [0, 1], [0.9, 1.1]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -195,23 +191,25 @@ export function SecondSequence() {
   }, [scrollYProgress, drawFrame]);
 
   return (
-    <section ref={containerRef} className="h-[250vh] relative bg-[#050508]">
+    // Increased height to 400vh for longer scroll duration
+    <section ref={containerRef} className="h-[400vh] relative bg-[#050508]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Background Fallback */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a14] to-[#050508]" />
 
-        <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`} />
+        {/* Video Sequence Canvas */}
+        <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isReady ? 'opacity-40' : 'opacity-0'}`} />
         
-        {/* Dark Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-[#050508]/50" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050508]/30 via-transparent to-[#050508]/30" />
-        
+        {/* Dark Gradient Overlays to separate text from background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-[#050508]/80" />
+        <div className="absolute inset-0 bg-black/40" />
+
         {/* Center Content Overlay */}
         <motion.div 
-          style={{ opacity: textOpacity, y: textY, scale: textScale }}
-          className="absolute inset-0 flex items-center justify-center p-4"
+          style={{ opacity: textOpacity, scale: contentScale }}
+          className="absolute inset-0 flex items-center justify-center p-4 z-20 pointer-events-none"
         >
-          <div className="text-center px-6 max-w-5xl mx-auto">
+          <div className="text-center px-6 max-w-5xl mx-auto backdrop-blur-sm bg-black/10 rounded-3xl p-8 border border-white/5">
             {/* Top Line Decoration */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-cyan-500/50" />
@@ -219,7 +217,7 @@ export function SecondSequence() {
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-cyan-500/50" />
             </div>
             
-            <h2 className="text-4xl md:text-6xl lg:text-8xl font-heading font-black text-white mb-6 leading-tight">
+            <h2 className="text-4xl md:text-6xl lg:text-8xl font-heading font-black text-white mb-6 leading-tight drop-shadow-2xl">
               Central India's
               <br />
               <span 
@@ -236,32 +234,26 @@ export function SecondSequence() {
               </span>
             </h2>
             
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
               Three days of innovation, culture, and unforgettable experiences await you 
               at the most anticipated techno-cultural festival.
             </p>
             
             {/* Floating Stats */}
-            <motion.div 
-              style={{ opacity: badgeOpacity }}
-              className="flex flex-wrap justify-center gap-4"
-            >
+            <div className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: Zap, value: "100+", label: "Events", color: "cyan" },
-                { icon: Users, value: "1000+", label: "Participants", color: "amber" },
-                { icon: Trophy, value: "₹5L+", label: "Prize Pool", color: "purple" },
+                { icon: Users, value: "1K+", label: "Parts", color: "amber" },
+                { icon: Trophy, value: "₹5L+", label: "Prize", color: "purple" },
               ].map((stat, i) => (
-                <motion.div
+                <div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
                   className={`px-6 py-4 rounded-2xl backdrop-blur-xl border transition-all ${
                     stat.color === "cyan" 
-                      ? "bg-cyan-500/10 border-cyan-500/20 hover:border-cyan-500/40" 
+                      ? "bg-cyan-500/20 border-cyan-500/30" 
                       : stat.color === "amber"
-                      ? "bg-amber-500/10 border-amber-500/20 hover:border-amber-500/40"
-                      : "bg-purple-500/10 border-purple-500/20 hover:border-purple-500/40"
+                      ? "bg-amber-500/20 border-amber-500/30"
+                      : "bg-purple-500/20 border-purple-500/30"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -271,12 +263,12 @@ export function SecondSequence() {
                     }`} />
                     <div className="text-left">
                       <div className="text-xl font-heading font-bold text-white">{stat.value}</div>
-                      <div className="text-xs text-white/40 font-mono uppercase">{stat.label}</div>
+                      <div className="text-xs text-white/60 font-mono uppercase">{stat.label}</div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>

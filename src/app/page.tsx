@@ -5,7 +5,6 @@ import AboutPreview from "@/components/home/AboutPreview";
 import StatsSection from "@/components/home/StatsSection";
 import PassesPreview from "@/components/home/PassesPreview";
 import VibeCheck from "@/components/features/VibeCheck";
-
 export default function Home() {
   return (
     <div className="bg-[#030303]">
@@ -16,6 +15,7 @@ export default function Home() {
       <SecondSequence />
       
       {/* CONTENT with animated particle background */}
+
       <ContentSection>
         {/* About Section - "The Story" */}
         <AboutPreview />
