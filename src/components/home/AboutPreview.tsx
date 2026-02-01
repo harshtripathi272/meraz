@@ -1,89 +1,168 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
+import { Play, ArrowRight, Calendar, Users, Music, Sparkles } from "lucide-react";
 
 export default function AboutPreview() {
-  const containerRef = useRef(null);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
+    target: sectionRef,
+    offset: ["start end", "end start"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const videoScale = useTransform(scrollYProgress, [0, 0.5], [1.1, 1]);
+  const videoY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const textY = useTransform(scrollYProgress, [0, 1], [-30, 30]);
 
   return (
-    <section ref={containerRef} className="py-32 px-6 md:px-12 max-w-7xl mx-auto relative overflow-hidden">
-      <div className="grid md:grid-cols-2 gap-16 items-center">
-        {/* Text Content */}
-        <div className="relative z-10">
-          <span className="block text-amber-500 font-mono text-xs tracking-[0.3em] mb-6 uppercase">
-            The Philosophy
-          </span>
-          <h2 className="text-4xl md:text-6xl font-heading font-black leading-tight mb-8">
-            GEARS OF <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">GLORY</span>
-          </h2>
-          <div className="space-y-6 text-lg text-white/60 leading-relaxed">
-            <p>
-              Meraz isn't just a festival; it's a convergence. Where the raw energy of 
-              <span className="text-amber-400"> tribal rhythms</span> fuses with the precision of 
-              <span className="text-cyan-400"> steampunk innovation</span>.
-            </p>
-            <p>
-              The 6th edition embraces the "Steampunk: Gears of Glory" theme, blending 
-              Victorian-era aesthetics with futuristic technology. We build a sanctuary for creators, 
-              hackers, and artists to explore the boundaries of what is possible.
-            </p>
-          </div>
-          
-          <div className="mt-10">
-             <Link 
-               href="/about"
-               className="inline-flex items-center gap-4 text-sm font-bold tracking-widest uppercase hover:text-amber-400 transition-colors group"
-             >
-               Explore the Lore
-               <span className="w-8 h-[1px] bg-white/20 group-hover:w-12 group-hover:bg-amber-500 transition-all" />
-             </Link>
-          </div>
-        </div>
+    <section ref={sectionRef} className="relative py-32 overflow-hidden">
+      {/* Background Gradient Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          style={{ y: videoY }}
+          className="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[180px]"
+        />
+        <motion.div
+          style={{ y: textY }}
+          className="absolute -right-32 bottom-1/3 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[150px]"
+        />
+      </div>
 
-        {/* Video/Image Container */}
-        <div className="relative">
-          <motion.div style={{ y }} className="relative z-10">
-            <div className="aspect-[4/5] relative overflow-hidden border border-amber-500/20 bg-black">
-               {/* Video Background */}
-               <motion.div style={{ scale: videoScale }} className="absolute inset-0">
-                 <video 
-                   autoPlay 
-                   loop 
-                   muted 
-                   playsInline
-                   className="w-full h-full object-cover grayscale contrast-125 sepia-[0.3]"
-                 >
-                   <source src="/assets/video/dance.mp4" type="video/mp4" />
-                 </video>
-               </motion.div>
-               
-               {/* Overlay */}
-               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-               
-               {/* Stats */}
-               <div className="absolute bottom-6 left-6 right-6 z-10">
-                 <div className="flex justify-between items-end border-b border-amber-500/30 pb-4">
-                   <div className="text-5xl font-mono text-amber-500 font-bold">03</div>
-                   <div className="text-xs text-white/60 font-mono text-right uppercase tracking-wider">
-                     Days of<br/>Action
-                   </div>
-                 </div>
-               </div>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          {/* Left: Video/Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ y: videoY }}
+            className="relative"
+          >
+            {/* Main Video Container */}
+            <div className="relative group">
+              {/* Outer glow */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 via-purple-500/10 to-amber-500/20 rounded-[2rem] blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
+              
+              {/* Video Frame */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a14]">
+                {/* Placeholder for video */}
+                <div className="aspect-video relative overflow-hidden">
+                  {/* Gradient Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-[#0a0a14] to-amber-500/20" />
+                  
+                  {/* Grid Pattern */}
+                  <div 
+                    className="absolute inset-0 opacity-[0.03]"
+                    style={{
+                      backgroundImage: `
+                        linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)
+                      `,
+                      backgroundSize: '40px 40px',
+                    }}
+                  />
+                  
+                  {/* Play Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="absolute inset-0 flex items-center justify-center group/play"
+                  >
+                    <div className="relative">
+                      {/* Outer ring */}
+                      <div className="absolute -inset-6 rounded-full border-2 border-white/10 group-hover/play:border-white/20 group-hover/play:scale-110 transition-all duration-300" />
+                      
+                      {/* Play button */}
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400 flex items-center justify-center shadow-2xl shadow-cyan-500/30 group-hover/play:shadow-cyan-500/50 transition-all">
+                        <Play className="w-8 h-8 text-black ml-1" fill="black" />
+                      </div>
+                    </div>
+                  </motion.button>
+                  
+                  {/* LIVE Badge */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-red-500/20 backdrop-blur-xl border border-red-500/30 rounded-full">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                    <span className="text-red-400 text-xs font-bold uppercase tracking-wider">Aftermovie</span>
+                  </div>
+                  
+                  {/* Year badge */}
+                  <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full">
+                    <span className="text-white/80 text-sm font-mono">MERAZ 5.0</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Corner Decorations */}
+              <div className="absolute -top-3 -left-3 w-6 h-6 border-l-2 border-t-2 border-cyan-500/50 rounded-tl-lg" />
+              <div className="absolute -top-3 -right-3 w-6 h-6 border-r-2 border-t-2 border-cyan-500/50 rounded-tr-lg" />
+              <div className="absolute -bottom-3 -left-3 w-6 h-6 border-l-2 border-b-2 border-amber-500/50 rounded-bl-lg" />
+              <div className="absolute -bottom-3 -right-3 w-6 h-6 border-r-2 border-b-2 border-amber-500/50 rounded-br-lg" />
             </div>
           </motion.div>
-          
-          {/* Decorative glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-amber-600/10 blur-3xl rounded-full z-0" />
+
+          {/* Right: Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ y: textY }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span className="text-amber-400 text-sm font-mono tracking-wider uppercase">About the Fest</span>
+            </div>
+
+            {/* Title */}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white mb-6 leading-tight">
+              Where Innovation
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-amber-400">
+                Meets Celebration
+              </span>
+            </h2>
+
+            {/* Description */}
+            <p className="text-white/50 text-lg leading-relaxed mb-8">
+              MERAZ is the annual techno-cultural festival of IIT Bhilai that brings together 
+              the brightest minds from across the country. From cutting-edge hackathons to 
+              electrifying Pro-Night concerts, experience three days of non-stop innovation, 
+              art, and entertainment.
+            </p>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-10">
+              {[
+                { icon: Calendar, value: "6th", label: "Edition" },
+                { icon: Users, value: "1K+", label: "Footfall" },
+                { icon: Music, value: "3", label: "Pro-Nights" },
+              ].map((stat) => (
+                <div 
+                  key={stat.label}
+                  className="p-4 bg-white/[0.02] border border-white/10 rounded-2xl text-center hover:border-white/20 transition-colors"
+                >
+                  <stat.icon className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
+                  <div className="text-2xl font-heading font-bold text-white">{stat.value}</div>
+                  <div className="text-white/40 text-xs font-mono uppercase">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <Link href="/about">
+              <motion.button
+                whileHover={{ x: 5 }}
+                className="group flex items-center gap-3 text-cyan-400 font-bold text-lg"
+              >
+                Discover Our Story
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>

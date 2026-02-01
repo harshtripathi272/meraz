@@ -34,7 +34,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className="min-h-screen bg-obsidian text-text-primary underline-offset-4"
+            className="min-h-screen bg-obsidian text-white underline-offset-4"
           >
             {children}
           </motion.main>

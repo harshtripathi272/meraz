@@ -3,7 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Check, Crown, Ticket, Users } from "lucide-react";
+import { Check, Crown, Ticket, Users, Sparkles, X, ArrowRight } from "lucide-react";
 import { passes } from "@/lib/data/passes";
 
 export default function PassesPreview() {
@@ -20,169 +20,144 @@ export default function PassesPreview() {
   };
 
   return (
-    <section ref={ref} className="section relative overflow-hidden">
+    <section ref={ref} className="relative py-32 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-surface-dark/50 to-transparent" />
-      <div className="absolute left-0 top-1/3 w-80 h-80 bg-neon-magenta/5 rounded-full blur-3xl" />
-      <div className="absolute right-0 bottom-1/3 w-80 h-80 bg-neon-teal/5 rounded-full blur-3xl" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute right-0 top-1/4 w-80 h-80 bg-amber-500/5 rounded-full blur-[150px]" />
+        <div className="absolute left-0 bottom-1/4 w-80 h-80 bg-cyan-500/5 rounded-full blur-[150px]" />
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-16"
         >
-          <h2 className="section-title">Grab Your Pass</h2>
-          <p className="section-subtitle">
-            Unlock the full Meraz experience. Group discounts available!
-          </p>
-        </motion.div>
-
-        {/* Group Size Selector */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex justify-center mb-12"
-        >
-          <div className="glass-card p-4 flex items-center gap-4">
-            <Users className="w-5 h-5 text-neon-teal" />
-            <span className="text-text-secondary text-sm">Group Size:</span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setGroupSize(Math.max(1, groupSize - 1))}
-                className="w-8 h-8 rounded-lg bg-surface-light text-text-primary hover:bg-neon-magenta/20 transition-colors"
-              >
-                -
-              </button>
-              <span className="w-12 text-center text-xl font-bold text-neon-teal">
-                {groupSize}
-              </span>
-              <button
-                onClick={() => setGroupSize(Math.min(20, groupSize + 1))}
-                className="w-8 h-8 rounded-lg bg-surface-light text-text-primary hover:bg-neon-magenta/20 transition-colors"
-              >
-                +
-              </button>
-            </div>
-            {groupSize >= 3 && (
-              <span className="text-amber-glow text-sm font-medium animate-pulse">
-                Group Discount Applied!
-              </span>
-            )}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full mb-6">
+            <Ticket className="w-4 h-4 text-amber-400" />
+            <span className="text-amber-400 text-sm font-mono tracking-wider uppercase">Tickets</span>
           </div>
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white mb-4">
+            Secure Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Pass</span>
+          </h2>
+          <p className="text-white/50 max-w-xl mx-auto text-lg mb-8">
+            Experience the full festival energy. Grab your passes early for the best rates!
+          </p>
+
+          <Link href="/passes">
+            <motion.button
+              whileHover={{ scale: 1.02, x: 5 }}
+              whileTap={{ scale: 0.98 }}
+              className="group inline-flex items-center gap-3 px-8 py-3 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-white/20 transition-all"
+            >
+              <span className="text-white font-medium">View Pricing Details</span>
+              <ArrowRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </motion.button>
+          </Link>
         </motion.div>
 
-        {/* Passes Grid */}
+        {/* Passes Cards Preview */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {passes.map((pass, index) => (
+          {passes.slice(0, 3).map((pass, index) => (
             <motion.div
               key={pass.id}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              className={`relative ${pass.featured ? "md:-mt-4 md:mb-4" : ""}`}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              whileHover={{ y: -10 }}
+              className={`relative group ${pass.featured ? "md:-mt-6 md:mb-6" : ""}`}
             >
-              {/* Featured badge */}
+              {/* Featured glow */}
               {pass.featured && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                  <span className="flex items-center gap-1 px-4 py-1 rounded-full bg-gradient-to-r from-neon-magenta to-neon-teal text-primary-dark text-xs font-bold">
-                    <Crown className="w-3.5 h-3.5" />
-                    MOST POPULAR
-                  </span>
-                </div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-amber-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               )}
-
+              
               <div 
-                className={`glass-card p-6 h-full transition-all hover:scale-105 ${
+                className={`relative h-full flex flex-col p-6 rounded-3xl transition-all border ${
                   pass.featured 
-                    ? "border-neon-magenta/50 shadow-lg shadow-neon-magenta/10" 
-                    : "hover:border-neon-teal/30"
+                    ? "bg-[#0a0a14]/90 backdrop-blur-xl border-amber-500/30 shadow-2xl shadow-amber-500/10" 
+                    : "bg-white/[0.02] border-white/10 hover:border-white/20"
                 }`}
               >
-                {/* Pass icon */}
-                <div 
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                {/* Featured badge */}
+                {pass.featured && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <span className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-amber-500 text-black text-xs font-bold shadow-lg shadow-cyan-500/20">
+                      <Crown className="w-3.5 h-3.5" />
+                      MOST POPULAR
+                    </span>
+                  </div>
+                )}
+
+                {/* Header */}
+                <div className="mb-6 pb-6 border-b border-white/5">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
                     pass.featured 
-                      ? "bg-gradient-to-br from-neon-magenta to-neon-teal" 
-                      : "bg-surface-light"
-                  }`}
-                >
-                  <Ticket 
-                    className={`w-6 h-6 ${pass.featured ? "text-primary-dark" : "text-neon-teal"}`} 
-                  />
+                      ? "bg-gradient-to-br from-cyan-500 to-amber-500" 
+                      : "bg-white/5 border border-white/10"
+                  }`}>
+                    <Ticket className={`w-6 h-6 ${pass.featured ? "text-black" : "text-white/70"}`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">{pass.title}</h3>
+                  <p className="text-white/40 text-sm">{pass.subtitle}</p>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-xl font-bold text-text-primary mb-1">
-                  {pass.title}
-                </h3>
-                <p className="text-text-muted text-sm mb-4">{pass.subtitle}</p>
-
                 {/* Price */}
-                <div className="mb-6">
-                  <span className="text-4xl font-black neon-text-gradient">
-                    ₹{getPrice(pass)}
-                  </span>
-                  <span className="text-text-muted text-sm ml-2">/ person</span>
-                  {groupSize >= 3 && getPrice(pass) < pass.basePrice && (
-                    <div className="text-xs text-text-muted mt-1">
-                      <span className="line-through">₹{pass.basePrice}</span>
-                      <span className="text-amber-glow ml-2">
-                        Save ₹{(pass.basePrice - getPrice(pass)) * groupSize} total!
-                      </span>
-                    </div>
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white">₹{pass.basePrice}</span>
+                    <span className="text-white/30 text-sm">/ person</span>
+                  </div>
+                  {pass.groupDiscounts.length > 0 && (
+                    <p className="text-amber-400 text-xs mt-2 font-medium">
+                      Group discounts available (up to 30% off)
+                    </p>
                   )}
                 </div>
 
                 {/* Benefits */}
-                <ul className="space-y-3 mb-6">
-                  {pass.benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm">
-                      <Check 
-                        className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                          benefit.includes("NO") ? "text-red-400" : "text-neon-teal"
-                        }`}
-                      />
-                      <span className={`text-text-secondary ${
-                        benefit.includes("NO") ? "line-through opacity-50" : ""
+                <ul className="space-y-3 mb-8 flex-1">
+                  {pass.benefits.slice(0, 4).map((benefit, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <div className={`mt-0.5 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        benefit.includes("NO") ? "bg-red-500/10" : "bg-emerald-500/10"
                       }`}>
+                        {benefit.includes("NO") ? (
+                          <X className="w-2.5 h-2.5 text-red-400" />
+                        ) : (
+                          <Check className="w-2.5 h-2.5 text-emerald-400" />
+                        )}
+                      </div>
+                      <span className={`text-white/60 ${benefit.includes("NO") ? "line-through opacity-50" : ""}`}>
                         {benefit}
                       </span>
                     </li>
                   ))}
+                  {pass.benefits.length > 4 && (
+                    <li className="text-white/30 text-sm pl-7 italic">
+                      + {pass.benefits.length - 4} more benefits
+                    </li>
+                  )}
                 </ul>
 
                 {/* CTA */}
-                <a
-                  href={pass.purchaseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`block w-full text-center py-3 rounded-lg font-medium transition-all ${
+                <Link
+                  href="/passes"
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
                     pass.featured
-                      ? "btn-primary"
-                      : "btn-neon"
+                      ? "bg-amber-500 text-black hover:bg-amber-400"
+                      : "bg-white/10 text-white hover:bg-white/20"
                   }`}
                 >
-                  Buy Now
-                </a>
+                  Get Details <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </motion.div>
           ))}
         </div>
-
-        {/* Note */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center text-text-muted text-sm mt-8"
-        >
-          * Entry to the Campus requires a valid Access/Student Pass. 
-          For queries contact: +91 94079 00542
-        </motion.p>
       </div>
     </section>
   );

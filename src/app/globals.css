@@ -1,49 +1,78 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  /* Premium Techno-Cultural Palette */
-  --bg-obsidian: #030303;
-  --bg-charcoal: #0a0a0a;
-  --accent-chrome: #e0e0e0;
-  --accent-indigo: #4f46e5;
-  --accent-plasma: #818cf8;
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
+@theme {
+  --color-obsidian: #030303;
+  --color-charcoal: #0a0a14;
   
-  /* Glass & Chrome Effects */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(10, 10, 10, 0.6);
-  --chrome-gradient: linear-gradient(135deg, #e0e0e0 0%, #9ca3af 100%);
+  --color-cyan-400: #00d4ff;
+  --color-cyan-500: #06b6d4;
   
-  /* Font Families */
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'Orbitron', monospace;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  
+  --color-purple-400: #c084fc;
+  --color-purple-500: #a855f7;
+  
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --animate-shimmer: shimmer 4s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+  --animate-spin-slow: spin 8s linear infinite;
 }
 
+/* Custom Keyframes */
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0, 212, 255, 0.3); }
+  50% { border-color: rgba(251, 191, 36, 0.3); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Global Variables matching the theme for use in non-tailwind contexts */
+:root {
+  --bg-obsidian: #030303;
+  --bg-charcoal: #0a0a14;
+  --accent-cyan: #00d4ff;
+  --accent-amber: #fbbf24;
+  --text-primary: #ffffff;
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(10, 10, 20, 0.6);
+}
+
+/* Base resets and styles */
 @layer base {
-  html.lenis {
-    height: auto;
-  }
-  
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-
-  .lenis.lenis-scrolling iframe {
-    pointer-events: none;
-  }
-
   body {
     background-color: var(--bg-obsidian);
     color: var(--text-primary);
@@ -51,47 +80,32 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
-
+  
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
-  .text-chrome {
-    background: var(--chrome-gradient);
+  .text-gradient-cyan-amber {
+    background: linear-gradient(135deg, #00d4ff 0%, #fbbf24 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .bg-noise {
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-
   .glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
   }
-  
-  .chrome-border {
-    position: relative;
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   
-  .chrome-border::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    border-radius: inherit;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
