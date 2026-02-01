@@ -17,7 +17,6 @@ export default function HeroScroll() {
 }
 
 function HeroContent({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
-  // Transform values
   const opacity = useTransform(scrollYProgress, [0, 0.15, 0.7, 1], [1, 1, 1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1.3]);
   const y = useTransform(scrollYProgress, [0, 1], [0, -150]);
@@ -50,7 +49,6 @@ function HeroContent({ scrollYProgress }: { scrollYProgress: MotionValue<number>
         style={{ opacity, scale, y }} 
         className="relative z-10"
       >
-        {/* Pre-title */}
         <motion.div style={{ y: titleY }}>
           <div className="mb-8 flex items-center justify-center gap-4">
             <span className="h-px w-16 bg-gradient-to-r from-transparent to-white/50" />
@@ -60,7 +58,6 @@ function HeroContent({ scrollYProgress }: { scrollYProgress: MotionValue<number>
             <span className="h-px w-16 bg-gradient-to-l from-transparent to-white/50" />
           </div>
 
-          {/* Main Title */}
           <h1 
             className="text-[clamp(4rem,20vw,16rem)] font-heading font-black tracking-tighter leading-[0.85]"
             style={{
@@ -68,19 +65,18 @@ function HeroContent({ scrollYProgress }: { scrollYProgress: MotionValue<number>
               textShadow: '0 0 100px rgba(79, 70, 229, 0.5), 0 0 50px rgba(79, 70, 229, 0.3)',
             }}
           >
-            МЕRАZ
+            MERAZ
           </h1>
         </motion.div>
 
-        {/* Subtitle */}
         <motion.div style={{ opacity: subtitleOpacity }} className="mt-10">
           <p className="text-xl md:text-3xl font-mono text-indigo-400 tracking-[0.2em] uppercase font-light">
-            6.0 // Techno-Cultural
+            6.0 // Steampunk: Gears of Glory
           </p>
           
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
             <div className="px-5 py-2 border border-white/20 rounded-full text-xs text-white/70 bg-black/40 backdrop-blur-md font-mono">
-              FEB 15-17, 2026
+              JAN 30 - FEB 1
             </div>
             <div className="px-5 py-2 border border-indigo-500/30 rounded-full text-xs text-indigo-400 bg-indigo-500/10 backdrop-blur-md font-mono">
               REGISTER NOW

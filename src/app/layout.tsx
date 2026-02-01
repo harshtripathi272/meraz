@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "MERAZ 6.0 // Neon Tribal Pulse",
-  description: "The Official Techno-Cultural Festival of IIT Bhilai. Experience the fusion of ancient rhythm and future tech.",
+  title: "MERAZ 6.0 // Steampunk: Gears of Glory",
+  description: "Experience the fusion of tribal rhythms and steampunk innovation. January 30 - February 1 at IIT Bhilai.",
 };
 
 export default function RootLayout({

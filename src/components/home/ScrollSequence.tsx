@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useScroll, useTransform, useMotionValueEvent, MotionValue } from "framer-motion";
+import { useScroll, useTransform, useMotionValueEvent, motion, MotionValue } from "framer-motion";
 
 interface ScrollSequenceProps {
   frameCount?: number;
@@ -22,10 +22,10 @@ export default function ScrollSequence({
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"],
+    offset: ["start start", "end start"],
   });
 
-  // Preload all images on mount
+  // Preload images
   useEffect(() => {
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
@@ -41,7 +41,6 @@ export default function ScrollSequence({
       };
       img.onerror = () => {
         loadedCount++;
-        setLoadProgress(Math.round((loadedCount / frameCount) * 100));
       };
       
       images.push(img);
@@ -50,33 +49,27 @@ export default function ScrollSequence({
     imagesRef.current = images;
   }, [frameCount, pathPattern]);
 
-  // Draw frame to canvas
   const drawFrame = useCallback((frameNum: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    // Clamp frame number
     const frame = Math.max(0, Math.min(frameNum, frameCount - 1));
     const img = imagesRef.current[frame];
 
-    // Clear canvas
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (img && img.complete && img.naturalHeight !== 0) {
-      // Draw image with "cover" behavior
       const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
       const x = (canvas.width - img.width * scale) / 2;
       const y = (canvas.height - img.height * scale) / 2;
       ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
     } else {
-      // Procedural fallback - animated grid
       drawFallback(ctx, canvas, frame);
     }
   }, [frameCount]);
 
-  // Fallback renderer
   const drawFallback = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, frame: number) => {
     const gradient = ctx.createRadialGradient(
       canvas.width / 2, canvas.height / 2, 0,
@@ -87,36 +80,30 @@ export default function ScrollSequence({
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Animated concentric rings
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     
-    ctx.strokeStyle = "rgba(79, 70, 229, 0.15)";
+    ctx.strokeStyle = "rgba(79, 70, 229, 0.12)";
     ctx.lineWidth = 1;
     
     for (let i = 0; i < 15; i++) {
       const baseRadius = (i + 1) * 80;
       const animatedRadius = baseRadius + (frame % 80);
-      
       ctx.beginPath();
       ctx.arc(cx, cy, animatedRadius, 0, Math.PI * 2);
       ctx.stroke();
     }
     
-    // Center text
-    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-    ctx.font = "bold 14px monospace";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.font = "bold 12px monospace";
     ctx.textAlign = "center";
-    ctx.fillText(`Loading frames... ${loadProgress}%`, cx, cy);
+    ctx.fillText(`Loading ${loadProgress}%`, cx, cy);
   };
 
-  // Listen to scroll and update frame
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const targetFrame = Math.round(latest * (frameCount - 1));
-    
-    // Smooth interpolation for less jerky movement
     const currentFrame = currentFrameRef.current;
-    const newFrame = Math.round(currentFrame + (targetFrame - currentFrame) * 0.3);
+    const newFrame = Math.round(currentFrame + (targetFrame - currentFrame) * 0.25);
     
     if (newFrame !== currentFrame) {
       currentFrameRef.current = newFrame;
@@ -124,7 +111,6 @@ export default function ScrollSequence({
     }
   });
 
-  // Handle resize and initial draw
   useEffect(() => {
     const handleResize = () => {
       if (canvasRef.current) {
@@ -136,36 +122,125 @@ export default function ScrollSequence({
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    
-    // Initial draw after a short delay for images to start loading
-    const timeout = setTimeout(() => drawFrame(0), 100);
+    setTimeout(() => drawFrame(0), 100);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timeout);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [drawFrame]);
+
+  const heroOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0.7, 1], [1, 0.95]);
+
+  return (
+    <div ref={containerRef} className="h-[200vh] relative">
+      {/* Fixed hero background */}
+      <div className="fixed top-0 left-0 w-screen h-screen z-0">
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.5) 100%)' }}
+        />
+        
+        <motion.div style={{ opacity: heroOpacity, scale: heroScale }} className="absolute inset-0 z-10">
+          {children && children({ scrollYProgress })}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECOND SEQUENCE - Background for content sections
+// ============================================
+interface ContentBackgroundProps {
+  children: React.ReactNode;
+}
+
+export function ContentBackground({ children }: ContentBackgroundProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const currentFrameRef = useRef(0);
+  
+  const frameCount = 165;
+  const pathPattern = "/assets/sequences/more/ezgif-frame-%03d.jpg";
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Preload second sequence
+  useEffect(() => {
+    const images: HTMLImageElement[] = [];
+    for (let i = 1; i <= frameCount; i++) {
+      const img = new Image();
+      const number = i.toString().padStart(3, '0');
+      img.src = pathPattern.replace('%03d', number);
+      images.push(img);
+    }
+    imagesRef.current = images;
+  }, []);
+
+  const drawFrame = useCallback((frameNum: number) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+
+    const frame = Math.max(0, Math.min(frameNum, frameCount - 1));
+    const img = imagesRef.current[frame];
+
+    ctx.fillStyle = "#050505";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (img && img.complete && img.naturalHeight !== 0) {
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const x = (canvas.width - img.width * scale) / 2;
+      const y = (canvas.height - img.height * scale) / 2;
+      ctx.globalAlpha = 0.3; // Semi-transparent for background effect
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+      ctx.globalAlpha = 1;
+    }
+  }, []);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const targetFrame = Math.round(latest * (frameCount - 1));
+    const currentFrame = currentFrameRef.current;
+    const newFrame = Math.round(currentFrame + (targetFrame - currentFrame) * 0.2);
+    
+    if (newFrame !== currentFrame) {
+      currentFrameRef.current = newFrame;
+      drawFrame(newFrame);
+    }
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (canvasRef.current) {
+        canvasRef.current.width = window.innerWidth;
+        canvasRef.current.height = window.innerHeight;
+        drawFrame(currentFrameRef.current);
+      }
     };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    setTimeout(() => drawFrame(0), 200);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, [drawFrame]);
 
   return (
-    <div ref={containerRef} className="h-[300vh] relative">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <canvas 
-          ref={canvasRef} 
-          className="absolute inset-0 w-full h-full"
-        />
-        
-        {/* Dark vignette overlay */}
-        <div 
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 100%)'
-          }}
-        />
-        
-        {/* Children overlay (text content) */}
-        <div className="absolute inset-0 z-10">
-          {children && children({ scrollYProgress })}
-        </div>
+    <div ref={containerRef} className="relative">
+      {/* Fixed background canvas for second sequence */}
+      <div className="fixed top-0 left-0 w-screen h-screen z-0 pointer-events-none">
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        <div className="absolute inset-0 bg-obsidian/80" /> {/* Darken overlay */}
+      </div>
+      
+      {/* Content that sits on top */}
+      <div className="relative z-10">
+        {children}
       </div>
     </div>
   );
