@@ -34,8 +34,8 @@ function Robot({ scrollY }: { scrollY: number }) {
     <primitive 
       ref={robotRef} 
       object={scene} 
-      scale={2.0} 
-      position={[0, -1.0, 0]}
+      scale={1.3} 
+      position={[0, -2.0, 0]}
     />
   );
 }
@@ -50,7 +50,7 @@ export default function RobotMascot() {
   }, []);
 
   return (
-    <div className="fixed top-24 right-6 z-40 w-48 h-48 md:w-64 md:h-64 pointer-events-none">
+    <div className="fixed top-24 right-4 z-40 w-48 h-48 md:w-56 md:h-56 pointer-events-none">
       {/* Container Frame */}
       <div className="relative w-full h-full">
         {/* Glow/Backdrop */}
@@ -58,7 +58,7 @@ export default function RobotMascot() {
         
         {/* Interactive Zone (pointer-events-auto for OrbitControls) */}
         <div className="absolute inset-0 pointer-events-auto">
-          <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 6], fov: 40 }} gl={{ alpha: true }}>
+          <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 40 }} gl={{ alpha: true }}>
             <ambientLight intensity={0.8} />
             <spotLight position={[10, 10, 10]} angle={0.3} penumbra={1} intensity={2} color="#00d4ff" />
             <pointLight position={[-10, -5, -5]} intensity={1} color="#fbbf24" />

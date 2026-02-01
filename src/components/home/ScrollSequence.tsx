@@ -200,11 +200,10 @@ export function SecondSequence() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a14] to-[#050508]" />
 
         {/* Video Sequence Canvas */}
-        <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isReady ? 'opacity-40' : 'opacity-0'}`} />
+        <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`} />
         
         {/* Dark Gradient Overlays to separate text from background */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-[#050508]/80" />
-        <div className="absolute inset-0 bg-black/40" />
 
         {/* Center Content Overlay */}
         <motion.div 
