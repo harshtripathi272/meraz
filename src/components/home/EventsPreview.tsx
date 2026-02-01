@@ -8,7 +8,7 @@ import { events, type Event } from "@/lib/data/events";
 
 const featuredEvents = (events as Event[]).slice(0, 6);
 
-const categoryIcons: Record<string, React.ElementType> = {
+const categoryIcons: Record<string, any> = {
   'sci-tech': Code,
   'cultural': Music,
   'sports': Gamepad2,

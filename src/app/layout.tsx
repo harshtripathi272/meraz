@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className="antialiased" suppressHydrationWarning>
       <body className={`${outfit.variable} ${inter.variable} ${orbitron.variable} bg-obsidian text-white`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
